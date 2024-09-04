@@ -4,21 +4,18 @@ from sqlalchemy import exc
 import json
 from flask_cors import CORS
 
-from .database.models import db_drop_and_create_all, Movie, Actor, setup_db
-from .auth import AuthError, requires_auth
+from database.models import db_drop_and_create_all, Movie, Actor, setup_db
+from auth import AuthError, requires_auth
 
 app = Flask(__name__)
 setup_db(app)
 CORS(app)
 app.app_context().push()
 
-'''
-@TODO uncomment the following line to initialize the datbase
-!! NOTE THIS WILL DROP ALL RECORDS AND START YOUR DB FROM SCRATCH
-!! NOTE THIS MUST BE UNCOMMENTED ON FIRST RUN
-!! Running this funciton will add one
-'''
 db_drop_and_create_all()
+
+if __name__ == "__main__":
+    app.run()
 
 '''
 MOVIES
@@ -31,12 +28,12 @@ def get_movies():
             if len(movies) == 0:
                 abort(404)
 
-            return jsonify(
-                {
-                    "success": True,
-                    "movies": movies
-                    
-                },200)
+            formatted_movies = [movie.format() for movie in movies]
+
+            return jsonify({
+                "success": True,
+                "movies": formatted_movies
+            }), 200
         except:
             abort(404)
 
@@ -81,7 +78,7 @@ def delete_movie(movie_id):
 
 @app.route('/movies/<int:movie_id>', methods=["PATCH"])
 @requires_auth("patch:movies")
-def update_drink(payload,movie_id):
+def update_movie(payload,movie_id):
 
     body = request.get_json()
 
@@ -115,12 +112,12 @@ def get_actors():
             if len(actors) == 0:
                 abort(404)
 
-            return jsonify(
-                {
-                    "success": True,
-                    "movies": actors
-                    
-                },200)
+            formatted_actors = [actor.format() for actor in actors]
+
+            return jsonify({
+                "success": True,
+                "actors": formatted_actors
+            }), 200
         except:
             abort(404)
 
@@ -165,7 +162,7 @@ def delete_actors(actor_id):
 
 @app.route('/actors/<int:actor_id>', methods=["PATCH"])
 @requires_auth("patch:actors")
-def update_drink(payload,actor_id):
+def update_actors(payload,actor_id):
 
     body = request.get_json()
 

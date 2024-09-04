@@ -7,6 +7,7 @@ import json
 # project_dir = os.path.dirname(os.path.abspath(__file__))
 # database_path = "sqlite:///{}".format(os.path.join(project_dir, database_filename))
 database_path="postgresql://owner:QCLTD4vGQTYJJVmK4zJpGXTZhkINyu0Q@dpg-crai7cq3esus73a1ijeg-a.oregon-postgres.render.com/casting_agency_database_622a"
+# database_path="postgresql://postgres:hazard@localhost:5432/realtodoapp"
 
 db = SQLAlchemy()
 
@@ -34,11 +35,22 @@ db_drop_and_create_all()
 def db_drop_and_create_all():
     db.drop_all()
     db.create_all()
-    # add one demo row which is helping in POSTMAN test
-    # drink = Drink(
-    #     title='water',
-    #     recipe='[{"name": "water", "color": "blue", "parts": 1}]'
-    # )
+    movie1 = Movie(title="The Shawshank Redemption", releaseDate="1994-09-23")
+    movie2 = Movie(title="The Godfather", releaseDate="1972-03-24")
+
+    actor1 = Actor(name="Morgan Freeman", age=83, gender="Male")
+    actor2 = Actor(name="Marlon Brando", age=80, gender="Male")
+    actor3 = Actor(name="Al Pacino", age=82, gender="Male")
+
+    # Add to session
+    db.session.add(movie1)
+    db.session.add(movie2)
+    db.session.add(actor1)
+    db.session.add(actor2)
+    db.session.add(actor3)
+
+    # Commit to the database
+    db.session.commit()
 
 
     # drink.insert()
